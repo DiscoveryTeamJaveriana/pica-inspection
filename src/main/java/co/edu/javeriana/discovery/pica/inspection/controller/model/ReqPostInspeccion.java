@@ -1,15 +1,12 @@
 package co.edu.javeriana.discovery.pica.inspection.controller.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 @Data
-public class ReqPostInspeccion   {
-  @JsonProperty("Codigo")
-  private String codigo = null;
+public class ReqPostInspeccion {
 
   @JsonProperty("CodigoSupervisor")
   private String codigoSupervisor = null;

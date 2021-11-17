@@ -54,7 +54,7 @@ public class InspectionController {
     public ResponseEntity<RespGetInspeccion> getInspecion(@RequestHeader(value=XRQUID) String xRqUID, @PathVariable(CODIGO) String codigo) throws JsonProcessingException {
         log.info("Get Employee for RqUID {}", xRqUID);
         InspectionController.this.tracer.currentSpan().tag(RQUID,xRqUID);
-        RespGetInspeccion response = inspectionService.getInspecion(codigo, xRqUID);
+        RespGetInspeccion response = inspectionService.getInspeccion(codigo, xRqUID);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(response);
         InspectionController.this.tracer.currentSpan().tag(RESPONSE,json);

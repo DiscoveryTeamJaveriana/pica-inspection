@@ -2,38 +2,35 @@ package co.edu.javeriana.discovery.pica.inspection.service.impl;
 
 import co.edu.javeriana.discovery.pica.inspection.controller.model.ReqPostInspeccion;
 import co.edu.javeriana.discovery.pica.inspection.controller.model.RespGetInspeccion;
+import co.edu.javeriana.discovery.pica.inspection.mapper.InspectionMapper;
+import co.edu.javeriana.discovery.pica.inspection.repository.InspectionRepository;
+import co.edu.javeriana.discovery.pica.inspection.repository.model.Inspection;
 import co.edu.javeriana.discovery.pica.inspection.service.IInspectionService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class InspectionService implements IInspectionService {
+
+    private final InspectionRepository inspectionRepository;
 
     @Override
     public void postInspeccion(ReqPostInspeccion request, String rquid) {
-        log.info("Panic implement me !");
+
+        Inspection inspection = InspectionMapper.mapReqPostInspectionToInspection(request);
+        inspectionRepository.save(inspection);
 
     }
 
     @Override
-    public RespGetInspeccion getInspecion(String codigo, String rquid) {
-        log.info("Panic implement me !");
-        RespGetInspeccion respGetInspeccion = new RespGetInspeccion();
-        respGetInspeccion.setCodigo("123");
-        respGetInspeccion.setCodigoSupervisor("123");
-        respGetInspeccion.setCodigoLocacion("1234");
-        respGetInspeccion.setCodigoEmpleado("1234");
-        respGetInspeccion.setTipo("Tipo");
-        respGetInspeccion.setFecha("11/11/21");
-        respGetInspeccion.setTitulo("Titulo");
-        respGetInspeccion.setDescripcion("Descripcion");
-        respGetInspeccion.setAprobado(true);
-        respGetInspeccion.setNovedad(true);
-        respGetInspeccion.setDescripcionNovedad("Novedad");
-        respGetInspeccion.setAccionMejora(true);
-        respGetInspeccion.setDescripcionAccionMejora("Descripcion");
-        respGetInspeccion.setComentario("Comentario");
-        return respGetInspeccion;
+    public RespGetInspeccion getInspeccion(String codigo, String rquid) {
+
+        return InspectionMapper
+                .mapInspectionToResptGetInspection(inspectionRepository.findById(codigo)
+                        .orElseThrow(() -> new RuntimeException("No Inspection")));
+        //TODO: Add ControllerAdvice for exception control
     }
 }
