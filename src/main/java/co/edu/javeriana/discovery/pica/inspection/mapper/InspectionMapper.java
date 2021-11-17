@@ -36,14 +36,14 @@ public class InspectionMapper {
 
     public static Inspection mapReqPostInspectionToInspection(final ReqPostInspeccion reqPostInspeccion) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
         return Inspection.builder()
                 .supervisorId(reqPostInspeccion.getCodigoSupervisor())
                 .locationId(reqPostInspeccion.getCodigoLocacion())
                 .employeeId(reqPostInspeccion.getCodigoEmpleado())
                 .type(reqPostInspeccion.getTipo())
-                .date(LocalDateTime.parse(reqPostInspeccion.getFecha(),formatter))
+                .date(LocalDate.parse(reqPostInspeccion.getFecha(),formatter))
                 .title(reqPostInspeccion.getTitulo())
                 .description(reqPostInspeccion.getDescripcion())
                 .approved(reqPostInspeccion.getAprobado())

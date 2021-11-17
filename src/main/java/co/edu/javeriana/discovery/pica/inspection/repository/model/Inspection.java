@@ -1,7 +1,6 @@
 package co.edu.javeriana.discovery.pica.inspection.repository.model;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +39,7 @@ public class Inspection {
     private String type;
 
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column(name = "title")
     private String title;
