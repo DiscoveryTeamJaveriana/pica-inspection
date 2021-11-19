@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  eureka-server:
+    image: eureka-server 
+    container_name: eureka
+    ports:
+      - '8761:8761'
+  zipkin-server:
+    image: openzipkin/zipkin
+    container_name: zipkin-server
+    depends_on: 
+      - eureka-server
+    ports:
+      - '9411:9411'
+  pica-supervisor:
+    image: pica-supervisor
+    container_name: supervisor
+    depends_on: 
+      - eureka-server
+      - zipkin-server
+  pica-location:
+    image: pica-location
+    container_name: location
+    depends_on: 
+      - eureka-server
+      - zipkin-server
+  pica-inspection:
+    image: pica-inspection
+    container_name: inspection
+    depends_on: 
+      - eureka-server
+      - zipkin-server
+  pica-historic:
+    image: pica-historic
+    container_name: historic
+    depends_on: 
+      - eureka-server
+      - zipkin-server
+  pica-employee:
+    image: pica-employee
+    container_name: employee
+    depends_on: 
+      - eureka-server
+      - zipkin-server
+  zuul-proxy:
+    image: zuul-proxy 
+    container_name: zuul
+    depends_on: 
+      - pica-supervisor
+      - pica-location
+      - pica-inspection
+      - pica-historic
+      - pica-employee
+    ports:
+      - '7777:7777'  
+
+networks:
+  default:
+    external: true
+    name: DiscoveryTeamNetwork
