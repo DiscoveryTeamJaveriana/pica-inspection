@@ -21,8 +21,12 @@ public class InspectionService implements IInspectionService {
     public void postInspeccion(ReqPostInspeccion request, String rquid) {
 
         Inspection inspection = InspectionMapper.mapReqPostInspectionToInspection(request);
-        inspectionRepository.save(inspection);
-
+        try {
+            inspectionRepository.save(inspection);
+        }catch (Exception e) {
+            log.info("Error al crear inspeccion");
+            throw e;
+        }
     }
 
     @Override

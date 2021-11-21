@@ -1,5 +1,6 @@
 package co.edu.javeriana.discovery.pica.inspection.controller;
 
+import co.edu.javeriana.discovery.pica.inspection.controller.model.Error;
 import co.edu.javeriana.discovery.pica.inspection.controller.model.ReqPostInspeccion;
 import co.edu.javeriana.discovery.pica.inspection.controller.model.RespGetInspeccion;
 import co.edu.javeriana.discovery.pica.inspection.service.IInspectionService;
@@ -26,6 +27,8 @@ public class InspectionController {
     private static final String RESPONSE = "Response";
     private static final String RESPONSECODE = "ResponseCode";
     private static final String RQUID = "RqUID";
+    private static final String ERRORCREACION = "Error al crear inspeccion";
+    private static final String CODIGOERRORCREACION = "300";
 
     private IInspectionService inspectionService;
 
@@ -39,13 +42,20 @@ public class InspectionController {
 
 
     @PostMapping("/Inspeccion")
-        public ResponseEntity<Void> postInspeccion(@RequestBody ReqPostInspeccion reqPostInspeccion, @RequestHeader(value=XRQUID) String xRqUID ) throws JsonProcessingException {
+        public ResponseEntity<Object> postInspeccion(@RequestBody ReqPostInspeccion reqPostInspeccion, @RequestHeader(value=XRQUID) String xRqUID ) throws JsonProcessingException {
         log.info("Creating Inspection for RqUID {}", xRqUID);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(reqPostInspeccion);
         InspectionController.this.tracer.currentSpan().tag(REQUEST,json);
         InspectionController.this.tracer.currentSpan().tag(RQUID,xRqUID);
-        inspectionService.postInspeccion(reqPostInspeccion, xRqUID);
+        try {
+            inspectionService.postInspeccion(reqPostInspeccion, xRqUID);
+        }catch (Exception e) {
+            InspectionController.this.tracer.currentSpan().tag(RESPONSECODE,HttpStatus.PARTIAL_CONTENT.toString());
+            String jsonError = mapper.writeValueAsString(buildError(ERRORCREACION,CODIGOERRORCREACION));
+            InspectionController.this.tracer.currentSpan().tag(RESPONSE,jsonError);
+            return new ResponseEntity<>(jsonError,putRqUIDHeader(xRqUID),HttpStatus.PARTIAL_CONTENT);
+        }
         InspectionController.this.tracer.currentSpan().tag(RESPONSECODE,HttpStatus.CREATED.toString());
         return new ResponseEntity<>(putRqUIDHeader(xRqUID),HttpStatus.CREATED);
     }
@@ -66,5 +76,11 @@ public class InspectionController {
         HttpHeaders headers = new HttpHeaders();
         headers.set(XRQUID,rquid);
         return headers;
+    }
+    private Error buildError(String mensaje, String codigo) {
+        Error error = new Error();
+        error.setCodigo(codigo);
+        error.setMensaje(mensaje);
+        return error;
     }
 }
