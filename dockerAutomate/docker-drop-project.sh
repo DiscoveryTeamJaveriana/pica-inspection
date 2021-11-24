@@ -7,7 +7,7 @@ function cdRepositoryHome(){
 }
 
 cdRepositoryHome
-docker-compose down --rmi all --volumes
+docker-compose down --volumes
 
 cdRepositoryHome inspection-db
 sh dropDatabase.sh

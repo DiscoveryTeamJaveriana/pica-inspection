@@ -44,7 +44,7 @@ services:
       - zipkin-server
   zuul-proxy:
     image: zuul-proxy 
-    container_name: zuul
+    container_name: zuul-proxy
     depends_on: 
       - pica-supervisor
       - pica-location
@@ -52,7 +52,19 @@ services:
       - pica-historic
       - pica-employee
     ports:
-      - '7777:7777'  
+      - '7777:7777'
+  pica-notification:
+    image: pica-notification
+    container_name: pica-notification
+    ports:
+      - 10074:80
+  pica-front:
+    image: pica-front
+    container_name: front
+    ports:
+      - 4200:80
+    depends_on:
+      - zuul-proxy
 
 networks:
   default:

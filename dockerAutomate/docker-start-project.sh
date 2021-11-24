@@ -37,5 +37,11 @@ cdRepositoryHome pica-supervisor
 mvn clean install -U -Dmaven.test.skip=true
 docker build -t pica-supervisor .
 
+cdRepositoryHome pica-notification
+docker build -t pica-notification .
+
+cdRepositoryHome pica-front
+docker build -t pica-front .
+
 cdRepositoryHome
 docker-compose -f docker-compose.yml up -d
